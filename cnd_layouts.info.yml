@@ -1,0 +1,7 @@
+name: 'Consult and Design Layouts'
+description: 'Provides the layouts of the system.'
+type: module
+core: 8.x
+dependencies:
+  - layout_builder
+  - layout_discovery

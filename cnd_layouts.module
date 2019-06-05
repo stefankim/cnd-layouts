@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * Implements hook_preprocess_layout().
+ */
+function cnd_layouts_preprocess_layout(&$variables) {
+  if (substr($variables['theme_hook_original'], 0, 12) == 'layout_') {
+    if (isset($variables['content']['#data'])) {
+      $variables['data'] = $variables['content']['#data'];
+    }
+
+    if (isset($variables['content']['#wrapper_attributes'])) {
+      $variables['wrapper_attributes'] = $variables['content']['#wrapper_attributes'];
+    }
+  }
+}
+
+/**
+ * Updates all the content layouts to use the new layouts.
+ */
+function _cnd_layouts_update_existing_layouts() {
+  $database = \Drupal::database();
+  $mappings = _cnd_layouts_get_layout_mappings();
+
+  $query = $database->select('node__layout_builder__layout', 'l');
+  $query->fields('l', [
+    'bundle',
+    'deleted',
+    'entity_id',
+    'revision_id',
+    'langcode',
+    'delta',
+    'layout_builder__layout_section',
+  ]);
+  $result = $query->execute()->fetchAll();
+
+  foreach ($result as $row) {
+    $value = $row->layout_builder__layout_section;
+    $section = unserialize($value);
+
+    if (!$section instanceof \Drupal\layout_builder\Section) {
+      continue;
+    }
+
+    $section_array = $section->toArray();
+
+    if (!isset($mappings[$section_array['layout_id']])) {
+      continue;
+    }
+
+    $section_array['layout_id'] = $mappings[$section_array['layout_id']];
+    $amended_value = serialize($section->fromArray($section_array));
+
+    $database->update('node__layout_builder__layout')
+      ->fields([
+        'layout_builder__layout_section' => $amended_value,
+      ])
+      ->condition('bundle', $row->bundle)
+      ->condition('deleted', $row->deleted)
+      ->condition('entity_id', $row->entity_id)
+      ->condition('revision_id', $row->revision_id)
+      ->condition('langcode', $row->langcode)
+      ->condition('delta', $row->delta)
+      ->execute();
+  }
+}
+
+/**
+ * Returns the mappings from old layout ID to new layout ID.
+ *
+ * @return array
+ */
+function _cnd_layouts_get_layout_mappings() {
+  return [
+    'layout_onecol' => 'layout_cnd_onecol_100',
+    'layout_twocol' => 'layout_cnd_twocol_50_50',
+    'layout_twocol_25_75' => 'layout_cnd_twocol_25_75',
+    'layout_twocol_33_66' => 'layout_cnd_twocol_34_66',
+    'layout_twocol_66_33' => 'layout_cnd_twocol_66_34',
+    'layout_twocol_75_25' => 'layout_cnd_twocol_75_25',
+    'layout_threecol_25_25_50' => 'layout_cnd_threecol_25_25_50',
+    'layout_threecol_25_50_25' => 'layout_cnd_threecol_25_50_25',
+    'layout_threecol_33_34_33' => 'layout_cnd_threecol_33_34_33',
+    'layout_threecol_50_25_25' => 'layout_cnd_threecol_50_25_25',
+    'layout_fourcol_25_25_25_25' => 'layout_cnd_fourcol_25_25_25_25',
+  ];
+}
