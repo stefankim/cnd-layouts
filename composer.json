@@ -1,0 +1,12 @@
+{
+    "name": "cnd/layouts",
+    "description": "Drupal 8 module for providing configurable layout options in Layout Builder.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Nathan Lawson",
+            "email": "nathan@consultanddesign.com"
+        }
+    ],
+    "require": {}
+}
