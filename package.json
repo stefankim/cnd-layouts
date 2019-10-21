@@ -1,0 +1,24 @@
+{
+  "name": "cnd-layouts",
+  "title": "CND Layouts",
+  "description": "CND after instalation layouts",
+  "version": "1.0",
+  "license": "MIT",
+  "keywords": [
+  ],
+  "author": {
+   
+  },
+  "contributors": [
+    {
+     
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stefankim/cnd-layouts.git"
+  },
+  "bugs": {
+  },
+  "dependencies": {},
+}
