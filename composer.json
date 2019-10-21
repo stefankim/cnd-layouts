@@ -1,7 +1,7 @@
 {
-    "name": "cnd/layouts",
+    "name": "stefankim/layouts",
     "description": "Drupal 8 module for providing configurable layout options in Layout Builder.",
-    "type": "project",
+    "type": "custom-module",
     "authors": [
         {
             "name": "Nathan Lawson",
